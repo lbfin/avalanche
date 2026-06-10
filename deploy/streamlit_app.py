@@ -16,7 +16,13 @@ st.title("Hello, GenAI!")
 st.write("This is your GenAI-powered data processing app.")
 
 # File uploader (add-on to hardcoded path)
-uploaded_file = st.file_uploader("📁 Upload a CSV file (or use default)", type=["csv"])
+col_uploader, col_reset = st.columns([4, 1])
+with col_uploader:
+    uploaded_file = st.file_uploader("📁 Upload a CSV file (or use default)", type=["csv"])
+with col_reset:
+    if st.button("🔄 Reset"):
+        st.session_state.clear()
+        st.rerun()  # Refresh to reflect cleared state
 
 # Dynamic path for default dataset
 default_csv_path = os.path.join(os.path.dirname(__file__), "customer_reviews.csv")
