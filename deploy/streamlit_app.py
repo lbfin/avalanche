@@ -18,6 +18,9 @@ st.write("This is your GenAI-powered data processing app.")
 # File uploader (add-on to hardcoded path)
 uploaded_file = st.file_uploader("📁 Upload a CSV file (or use default)", type=["csv"])
 
+# Dynamic path for default dataset
+default_csv_path = os.path.join(os.path.dirname(__file__), "customer_reviews.csv")
+
 # Layout two buttons side by side
 col1, col2 = st.columns(2)
 
@@ -28,7 +31,7 @@ with col1:
                 if uploaded_file:
                     st.session_state["df"] = pd.read_csv(uploaded_file)
                 else:
-                    st.session_state["df"] = pd.read_csv("deploy/customer_reviews.csv")
+                    st.session_state["df"] = pd.read_csv(default_csv_path)
             st.success("Dataset loaded successfully!")
         except FileNotFoundError:
             st.error("Dataset not found. Please check the file path.")
