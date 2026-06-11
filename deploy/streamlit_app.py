@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import re
 import os
+import plotly.express as px
 
 
 # Helper function to clean text
@@ -78,7 +79,8 @@ if "df" in st.session_state:
             "Count": [product_count, other_count]
         })
         st.subheader("📊 Distribution of Reviews")
-        st.pie_chart(pie_data.set_index("Category")["Count"])
+        fig = px.pie(pie_data, values="Count", names="Category", title="Share of Reviews")
+        st.plotly_chart(fig)
     
     st.subheader("Sentiment Score by Product")
     grouped = st.session_state["df"].groupby(["PRODUCT"])["SENTIMENT_SCORE"].mean()
