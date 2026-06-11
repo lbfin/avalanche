@@ -59,7 +59,8 @@ with col2:
 if "df" in st.session_state:
     # Product filter dropdown
     st.subheader("🔍 Filter by Product")
-    product = st.selectbox("Choose a product", ["All Products"] + list(st.session_state["df"]["PRODUCT"].unique()))
+    sorted_products = sorted(st.session_state["df"]["PRODUCT"].unique())
+    product = st.selectbox("Choose a product", ["All Products"] + sorted_products)
     st.subheader(f"📁 Reviews for {product}")
 
     if product != "All Products":
