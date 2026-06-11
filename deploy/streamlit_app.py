@@ -20,7 +20,8 @@ col_uploader, col_reset = st.columns([4, 1])
 with col_uploader:
     uploaded_file = st.file_uploader("📁 Upload a CSV file (or use default)", type=["csv"])
 with col_reset:
-    st.write("")  # Vertical padding to align with uploader
+    #st.write("")  # Vertical padding to align with uploader
+    st.empty()
     if st.button("🔄 Reset", help="Clear all data and start fresh"):
         st.session_state.clear()
         st.rerun()  # Refresh to reflect cleared state
