@@ -65,7 +65,8 @@ if "df" in st.session_state:
         filtered_df = st.session_state["df"][st.session_state["df"]["PRODUCT"] == product]
     else:
         filtered_df = st.session_state["df"]
-    st.dataframe(filtered_df)
+    st.write(f"Showing {len(filtered_df)} reviews")
+    st.dataframe(filtered_df.reset_index(drop=True))
     
     st.subheader("Sentiment Score by Product")
     grouped = st.session_state["df"].groupby(["PRODUCT"])["SENTIMENT_SCORE"].mean()
