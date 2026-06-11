@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import re
 import os
+import plotly.express as px
 
 
 # Helper function to clean text
@@ -58,14 +59,29 @@ with col2:
 if "df" in st.session_state:
     # Product filter dropdown
     st.subheader("🔍 Filter by Product")
-    product = st.selectbox("Choose a product", ["All Products"] + list(st.session_state["df"]["PRODUCT"].unique()))
+    sorted_products = sorted(st.session_state["df"]["PRODUCT"].unique())
+    product = st.selectbox("Choose a product", ["All Products"] + sorted_products)
     st.subheader(f"📁 Reviews for {product}")
 
     if product != "All Products":
         filtered_df = st.session_state["df"][st.session_state["df"]["PRODUCT"] == product]
     else:
         filtered_df = st.session_state["df"]
-    st.dataframe(filtered_df)
+    st.write(f"Showing {len(filtered_df)} reviews")
+    st.dataframe(filtered_df.reset_index(drop=True))
+    
+    # Pie chart: Show share of selected product vs. all others
+    if product != "All Products":
+        total_reviews = len(st.session_state["df"])
+        product_count = len(filtered_df)
+        other_count = total_reviews - product_count
+        pie_data = pd.DataFrame({
+            "Category": [product, "Other Products"],
+            "Count": [product_count, other_count]
+        })
+        st.subheader("📊 Distribution of Reviews")
+        fig = px.pie(pie_data, values="Count", names="Category", title="Share of Reviews")
+        st.plotly_chart(fig)
     
     st.subheader("Sentiment Score by Product")
     grouped = st.session_state["df"].groupby(["PRODUCT"])["SENTIMENT_SCORE"].mean()
