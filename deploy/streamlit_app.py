@@ -68,6 +68,18 @@ if "df" in st.session_state:
     st.write(f"Showing {len(filtered_df)} reviews")
     st.dataframe(filtered_df.reset_index(drop=True))
     
+    # Pie chart: Show share of selected product vs. all others
+    if product != "All Products":
+        total_reviews = len(st.session_state["df"])
+        product_count = len(filtered_df)
+        other_count = total_reviews - product_count
+        pie_data = pd.DataFrame({
+            "Category": [product, "Other Products"],
+            "Count": [product_count, other_count]
+        })
+        st.subheader("📊 Distribution of Reviews")
+        st.pie_chart(pie_data.set_index("Category")["Count"])
+    
     st.subheader("Sentiment Score by Product")
     grouped = st.session_state["df"].groupby(["PRODUCT"])["SENTIMENT_SCORE"].mean()
     st.bar_chart(grouped)
