@@ -15,16 +15,36 @@ def clean_text(text):
 st.title("Hello, GenAI!")
 st.write("This is your GenAI-powered data processing app.")
 
+# File uploader (add-on to hardcoded path)
+col_uploader, col_reset = st.columns([4, 1])
+with col_uploader:
+    uploaded_file = st.file_uploader("📁 Upload a CSV file (or use default)", type=["csv"])
+with col_reset:
+    #st.write("")  # Vertical padding to align with uploader
+    st.empty()
+    if st.button("🔄 Reset", help="Clear all data and start fresh"):
+        st.session_state.clear()
+        st.rerun()  # Refresh to reflect cleared state
+
+# Dynamic path for default dataset
+default_csv_path = os.path.join(os.path.dirname(__file__), "customer_reviews.csv")
+
 # Layout two buttons side by side
 col1, col2 = st.columns(2)
 
 with col1:
     if st.button("📥 Ingest Dataset"):
         try:
-            st.session_state["df"] = pd.read_csv("deploy/customer_reviews.csv")
+            with st.spinner("🔄 Loading dataset..."):
+                if uploaded_file:
+                    st.session_state["df"] = pd.read_csv(uploaded_file)
+                else:
+                    st.session_state["df"] = pd.read_csv(default_csv_path)
             st.success("Dataset loaded successfully!")
         except FileNotFoundError:
             st.error("Dataset not found. Please check the file path.")
+        except Exception as e:
+            st.error(f"Error loading dataset: {str(e)}")
 
 with col2:
     if st.button("🧹 Parse Reviews"):
