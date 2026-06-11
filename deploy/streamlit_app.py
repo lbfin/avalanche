@@ -41,7 +41,13 @@ with col1:
                     st.session_state["df"] = pd.read_csv(uploaded_file)
                 else:
                     st.session_state["df"] = pd.read_csv(default_csv_path)
-            st.success("Dataset loaded successfully!")
+            # Validate required columns
+            required_columns = ["PRODUCT", "SUMMARY", "SENTIMENT_SCORE"]
+            missing_columns = [col for col in required_columns if col not in st.session_state["df"].columns]
+            if missing_columns:
+                st.error(f"Missing required columns: {', '.join(missing_columns)}")
+            else:
+                st.success("Dataset loaded successfully!")
         except FileNotFoundError:
             st.error("Dataset not found. Please check the file path.")
         except Exception as e:
